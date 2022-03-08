@@ -1,29 +1,23 @@
 
 import React from 'react'
+import { useState } from 'react';
 import { useEffect } from 'react';
 import searchIcon from './search.svg'
+import Card from './Card';
 
 
    const API_URL = 'https://www.omdbapi.com?apikey=6fac29e';
 
    const App = () => {
 
-
-    const movie1={
-        
-            "Title": "Batman: The Killing Joke",
-            "Year": "2016",
-            "imdbID": "tt4853102",
-            "Type": "movie",
-            "Poster": "https://m.media-amazon.com/images/M/MV5BMTdjZTliODYtNWExMi00NjQ1LWIzN2MtN2Q5NTg5NTk3NzliL2ltYWdlXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_SX300.jpg"
-        
-    }
+const [movies, setMovies]= useState([])
+    
 
     const searchMovies = async (title) =>{
        
         const response=await fetch (`${API_URL}&s=${title}`)
         const data= await response.json();
-        console.log(data.Search);
+        setMovies(data.Search);
     }
     useEffect(()=>{
     searchMovies('Batman')
@@ -36,14 +30,24 @@ import searchIcon from './search.svg'
         <input placeholder='search for movies' />
         <img src={searchIcon} alt="search" onClick={()=>{}}/>
         </div>
-        <div className="container">
-            <div className="movie">
-                <p>{movie1.Year}</p>
-                <img src={movie1.Poster} alt={movie1.Title} />
-                <div><span>{movie1.Type}</span></div>
-                </div>
-                
-            </div>
+
+        {
+          movies?.length > 0 ? (
+
+            <div className="container">
+            {movies.map((movie) =>(
+              <Card movie={movie} />
+            ))}
+        </div>
+
+
+          ):(
+            <div className="empty">
+              <h2>No movies found</h2>
+              </div>
+          )
+        }
+        
       </div>
     )
   }
